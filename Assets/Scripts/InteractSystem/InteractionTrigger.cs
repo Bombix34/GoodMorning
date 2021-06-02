@@ -10,6 +10,8 @@ public class InteractionTrigger : MonoBehaviour
 
     [HideInInspector] public List<Interaction> interactions;
 
+    public GameObject CurrentObjectInteract { get; set; } = null;
+
     private void OnTriggerEnter(Collider other)
     {
         if (interactions.Find(x => x.triggerType == TriggerType.ON_OBJECT_ENTER) == null)
@@ -17,6 +19,7 @@ public class InteractionTrigger : MonoBehaviour
         ObjectTag otherTag = StringTagToEnum(other.tag);
         if (interactions.Find(x => x.concernedObject == otherTag) == null)
             return;
+        CurrentObjectInteract = other.gameObject;
         List<Interaction> interactionsTriggered = interactions.FindAll(x => x.triggerType == TriggerType.ON_OBJECT_ENTER);
         interactionsTriggered = interactionsTriggered.FindAll(x => x.concernedObject == otherTag);
         foreach(var item in interactionsTriggered)
@@ -32,6 +35,7 @@ public class InteractionTrigger : MonoBehaviour
         ObjectTag otherTag = StringTagToEnum(other.tag);
         if (interactions.Find(x => x.concernedObject == otherTag) == null)
             return;
+        CurrentObjectInteract = other.gameObject;
         List<Interaction> interactionsTriggered = interactions.FindAll(x => x.triggerType == TriggerType.ON_OBJECT_STAY);
         interactionsTriggered = interactionsTriggered.FindAll(x => x.concernedObject == otherTag);
         foreach (var item in interactionsTriggered)
@@ -47,8 +51,18 @@ public class InteractionTrigger : MonoBehaviour
         ObjectTag otherTag = StringTagToEnum(other.tag);
         if (interactions.Find(x => x.concernedObject == otherTag) == null)
             return;
+        CurrentObjectInteract = other.gameObject;
         List<Interaction> interactionsTriggered = interactions.FindAll(x => x.triggerType == TriggerType.ON_OBJECT_EXIT);
         interactionsTriggered = interactionsTriggered.FindAll(x => x.concernedObject == otherTag);
+        foreach (var item in interactionsTriggered)
+        {
+            item.triggeredEvent.Invoke();
+        }
+    }
+
+    public void OnPlayerInteractInput()
+    {
+        List<Interaction> interactionsTriggered = interactions.FindAll(x => x.triggerType == TriggerType.ON_PLAYER_INTERACT);
         foreach (var item in interactionsTriggered)
         {
             item.triggeredEvent.Invoke();

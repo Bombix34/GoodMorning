@@ -11,24 +11,54 @@ public class PlayerManager : ObjectManager
     private PlayerMovement movement;
 
     [SerializeField] private GameObject modelRenderer;
+    private List<InteractionTrigger> interactTriggersInRange;
 
     private void Awake()
     {
         inputs = GetComponent<RewiredInputManager>();
         movement = GetComponent<PlayerMovement>();
         modelRenderer.SetActive(false);
+        interactTriggersInRange = new List<InteractionTrigger>();
     }
 
     private void Update()
     {
         UpdateMovement();
         ShowDebugRenderer();
+        InteractInput();
         currentState?.Execute();
     }
 
     private void FixedUpdate()
     {
         currentState?.FixedExecute();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.GetComponent<InteractionTrigger>()!=null)
+        {
+            interactTriggersInRange.Add(other.GetComponent<InteractionTrigger>());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<InteractionTrigger>() != null)
+        {
+            interactTriggersInRange.Remove(other.GetComponent<InteractionTrigger>());
+        }
+    }
+
+    private void InteractInput()
+    {
+        if(inputs.GetInteractInputDown())
+        {
+            foreach(var item in interactTriggersInRange)
+            {
+                item.OnPlayerInteractInput();
+            }
+        }
     }
 
     public override void ChangeState(State newState)
@@ -59,6 +89,8 @@ public class PlayerManager : ObjectManager
     {
         get => movement;
     }
+
+    public RewiredInputManager Input { get => inputs; }
 
     #endregion
 

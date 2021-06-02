@@ -54,7 +54,6 @@ public class InteractionTriggerEditor : Editor
     private void DisplayInteractionField(SerializedProperty currentInteractionProp, int index)
     {
         EditorGUI.BeginChangeCheck();
-        Debug.Log(index);
         SerializedProperty concernedObjectRef = currentInteractionProp.FindPropertyRelative("concernedObject");
         SerializedProperty triggerTypeRef = currentInteractionProp.FindPropertyRelative("triggerType");
         SerializedProperty triggeredEventRef = currentInteractionProp.FindPropertyRelative("triggeredEvent");
