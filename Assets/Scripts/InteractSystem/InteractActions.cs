@@ -45,4 +45,14 @@ public class InteractActions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    public void DisplayDebugText(string text)
+    {
+        MainUI.Instance.DisplayDebugText(true, text);
+    }
+
+    public void HiddeDebugText()
+    {
+        MainUI.Instance.DisplayDebugText(false);
+    }
+
 }

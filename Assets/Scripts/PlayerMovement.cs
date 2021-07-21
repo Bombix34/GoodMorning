@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,11 +10,11 @@ public class PlayerMovement : MonoBehaviour
     private bool canMove = true;
     private Vector3 currentVelocity;
 
-    public bool canMoveInDepth = true;
+    public PlayerMovementType movementType;
     public float moveSpeed = 1f;
 
-    //to apply a modif to the rotation speed
-    private float modifRotationSpeed = 1f;
+    public float[] depthPosition;
+    private int indexDepthPosition = 1;
 
     private void Awake()
     {
@@ -33,16 +34,50 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         //init values
-        Vector3 forward =Camera.main.transform.forward;
+        Vector3 forward = Camera.main.transform.forward;
         forward.y = 0;
         forward = Vector3.Normalize(forward);
         Vector3 right = Camera.main.transform.right;
 
         Vector3 rightMove = right * (10 * playerInputs.x) * Time.deltaTime;
         Vector3 upMove =  forward * (10 * playerInputs.z) * Time.deltaTime;
-        Vector3 heading = canMoveInDepth ? (rightMove + upMove).normalized : rightMove.normalized;
-
-        float amplitude = new Vector2(playerInputs.x, canMoveInDepth ? playerInputs.z : 0f).magnitude;
+        Vector3 heading = Vector3.zero;
+        float amplitude = 0f;
+        switch (movementType)
+        {
+            case PlayerMovementType.TWO_DIMENSIONS:
+                heading = rightMove.normalized;
+                amplitude = new Vector2(playerInputs.x,  0f).magnitude;
+                break;
+            case PlayerMovementType.THREE_DIMENSIONS:
+                heading = (rightMove + upMove).normalized;
+                amplitude = new Vector2(playerInputs.x, playerInputs.z).magnitude;
+                break;
+            case PlayerMovementType.TWO_DIMENSIONS_WITH_DEPTH:
+                if(Mathf.Abs(playerInputs.z) > Mathf.Abs(playerInputs.x))
+                {
+                    Vector3 headingRaycast = playerInputs.z > 0f ? transform.TransformDirection(Vector3.forward) : transform.TransformDirection(Vector3.back);
+                    RaycastHit hit;
+                    if (!Physics.Raycast(transform.position, headingRaycast, out hit, 1))
+                    {
+                        canMove = false;
+                        IndexDepthPosition = playerInputs.z > 0f ? indexDepthPosition + 1 : indexDepthPosition - 1;
+                        transform.DOMoveZ(depthPosition[indexDepthPosition], 0.2f)
+                            .OnComplete(()=> canMove=true);
+                    }
+                    else
+                    {
+                        
+                    }
+                    return;
+                }
+                else
+                {
+                    heading = rightMove.normalized;
+                    amplitude = new Vector2(playerInputs.x, 0f).magnitude;
+                }
+                break;
+        }
 
         currentVelocity = Vector3.zero;
         currentVelocity += heading * amplitude * (moveSpeed);
@@ -52,6 +87,10 @@ public class PlayerMovement : MonoBehaviour
     public void ResetVelocity()
     {
         DoMove(Vector3.zero);
+    }
+
+    public void SwitchDepthPosition(bool isUp)
+    {
     }
 
 
@@ -96,5 +135,32 @@ public class PlayerMovement : MonoBehaviour
         return ray;
     }
 
+    public int IndexDepthPosition
+    {
+        get => indexDepthPosition;
+        set
+        {
+            indexDepthPosition = value;
+            if (indexDepthPosition >= depthPosition.Length)
+            {
+                indexDepthPosition = depthPosition.Length - 1;
+                return;
+            }
+            if (indexDepthPosition <= 0)
+            {
+                indexDepthPosition = 0;
+                return;
+            }
+
+        }
+    }
+
     #endregion
+}
+
+public enum PlayerMovementType
+{
+    TWO_DIMENSIONS,
+    THREE_DIMENSIONS,
+    TWO_DIMENSIONS_WITH_DEPTH,
 }

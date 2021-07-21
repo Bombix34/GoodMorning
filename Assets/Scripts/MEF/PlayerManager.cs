@@ -26,13 +26,15 @@ public class PlayerManager : ObjectManager
         UpdateMovement();
         ShowDebugRenderer();
         InteractInput();
-        currentState?.Execute();
+        //currentState?.Execute();
     }
 
+    /*
     private void FixedUpdate()
     {
         currentState?.FixedExecute();
     }
+    */
 
     private void OnTriggerEnter(Collider other)
     {
