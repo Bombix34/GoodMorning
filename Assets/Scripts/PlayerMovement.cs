@@ -34,10 +34,10 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         //init values
-        Vector3 forward = Camera.main.transform.forward;
+        Vector3 forward = Vector3.forward ;
         forward.y = 0;
         forward = Vector3.Normalize(forward);
-        Vector3 right = Camera.main.transform.right;
+        Vector3 right = Vector3.right;
 
         Vector3 rightMove = right * (10 * playerInputs.x) * Time.deltaTime;
         Vector3 upMove =  forward * (10 * playerInputs.z) * Time.deltaTime;
@@ -62,12 +62,8 @@ public class PlayerMovement : MonoBehaviour
                     {
                         canMove = false;
                         IndexDepthPosition = playerInputs.z > 0f ? indexDepthPosition + 1 : indexDepthPosition - 1;
-                        transform.DOMoveZ(depthPosition[indexDepthPosition], 0.2f)
+                        transform.DOMoveZ(depthPosition[indexDepthPosition], 0.6f)
                             .OnComplete(()=> canMove=true);
-                    }
-                    else
-                    {
-                        
                     }
                     return;
                 }
@@ -78,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
         }
-
         currentVelocity = Vector3.zero;
         currentVelocity += heading * amplitude * (moveSpeed);
         rigidBody.MovePosition(transform.position + currentVelocity);
@@ -91,6 +86,24 @@ public class PlayerMovement : MonoBehaviour
 
     public void SwitchDepthPosition(bool isUp)
     {
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(movementType == PlayerMovementType.TWO_DIMENSIONS_WITH_DEPTH)
+        {
+            for(int i = 0; i < depthPosition.Length; ++i)
+            {
+                Color color = new Color(1f, 0f, 0f, 0.4f);
+                if (i == 1)
+                    color = new Color(0f, 1f, 0f, 0.4f);
+                else if (i == 2)
+                    color = new Color(0f, 0f, 1f, 0.4f);
+                Vector3 start = new Vector3(0f, -1f, depthPosition[i]);
+                Gizmos.color = color;
+                Gizmos.DrawCube(start, new Vector3(50f, 2f, 0.2f));
+            }
+        }
     }
 
 

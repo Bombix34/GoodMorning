@@ -74,8 +74,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9314d87d4543029479e1cd3bc6836e7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canMoveInDepth: 0
+  movementType: 0
   moveSpeed: 0.1
+  depthPosition:
+  - -2
+  - 0
+  - 2
 --- !u!54 &3959083922732661415
 Rigidbody:
   m_ObjectHideFlags: 0
