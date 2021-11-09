@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(InteractActions))]
 public class InteractionTrigger : MonoBehaviour
 {
     private const string PLAYER_TAG = "Player";

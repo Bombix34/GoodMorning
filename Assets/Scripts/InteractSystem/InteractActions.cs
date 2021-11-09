@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(InteractionTrigger))]
 public class InteractActions : MonoBehaviour
 {
     private GameObject linkedObject;
@@ -53,6 +52,30 @@ public class InteractActions : MonoBehaviour
     public void HiddeDebugText()
     {
         MainUI.Instance.DisplayDebugText(false);
+    }
+
+    public void SetAnimatorBoolTrue(string boolKey)
+    {
+        linkedObject.GetComponentInChildren<Animator>()?.SetBool(boolKey, true);
+    }
+
+    public void SetAnimatorBoolFalse(string boolKey)
+    {
+        linkedObject.GetComponentInChildren<Animator>()?.SetBool(boolKey, false);
+    }
+
+    public void SetAnimatorBoolInvert(string boolKey)
+    {
+        Animator animator = linkedObject.GetComponentInChildren<Animator>();
+        if (animator == null)
+            return;
+        bool currentBoolValue = animator.GetBool(boolKey);
+        animator.SetBool(boolKey, !currentBoolValue);
+    }
+
+    public void SetAnimatorTrigger(string triggerKey)
+    {
+        linkedObject.GetComponentInChildren<Animator>()?.SetTrigger(triggerKey);
     }
 
 }
