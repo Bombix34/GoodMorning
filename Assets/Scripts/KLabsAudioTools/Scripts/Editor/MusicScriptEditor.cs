@@ -33,25 +33,29 @@ public class MusicScriptEditor : Editor
     {
         EditorGUI.BeginChangeCheck();
         serializedObject.Update();
-
-        EditorGUILayout.LabelField("General Settings", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(m_outputMixerGroup);
-        EditorGUILayout.PropertyField(m_muteGeneral);
-        EditorGUILayout.PropertyField(m_userBpm);
+        using (new EditorGUILayout.VerticalScope("HelpBox"))
+        {
+            EditorGUILayout.LabelField("General Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(m_outputMixerGroup);
+            EditorGUILayout.PropertyField(m_muteGeneral);
+            EditorGUILayout.PropertyField(m_userBpm);
+        }
         
         EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("First Segment Settings", EditorStyles.boldLabel);
-        EditorGUILayout.PropertyField(m_playType);
-
-        if(m_playType.intValue == 0)
+        using (new EditorGUILayout.VerticalScope("HelpBox"))
         {
-            EditorGUILayout.PropertyField(m_triggerObject);
-        }
+            EditorGUILayout.LabelField("First Segment Settings", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(m_playType);
 
-        EditorGUILayout.PropertyField(m_musicalSegment);
-        EditorGUILayout.PropertyField(m_segmentBarLength);
-        EditorGUILayout.Slider(m_fadeInTime, 0.0f, 20.0f);
+            if (m_playType.intValue == 0)
+            {
+                EditorGUILayout.PropertyField(m_triggerObject);
+            }
+
+            EditorGUILayout.PropertyField(m_musicalSegment);
+            EditorGUILayout.PropertyField(m_segmentBarLength);
+            EditorGUILayout.Slider(m_fadeInTime, 0.0f, 20.0f);
+        }
 
         serializedObject.ApplyModifiedProperties();
     }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using Tools.Audio;
+using Tools.Managers;
 
 public class InteractActions : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class InteractActions : MonoBehaviour
     {
         if (linkedObject == null)
             return;
+        linkedObject.transform.DORewind();
         linkedObject.transform.DOPunchScale(Vector3.one * amount, 0.3f);
     }
 
@@ -26,6 +29,7 @@ public class InteractActions : MonoBehaviour
     {
         if (linkedObject == null)
             return;
+        linkedObject.transform.DORewind();
         linkedObject.transform.DOScale(Vector3.one * newScale, 0.3f);
     }
 
@@ -76,6 +80,11 @@ public class InteractActions : MonoBehaviour
     public void SetAnimatorTrigger(string triggerKey)
     {
         linkedObject.GetComponentInChildren<Animator>()?.SetTrigger(triggerKey);
+    }
+
+    public void PlaySFXSound(int audioType)
+    {
+        SoundManager.Instance.PlaySound((AudioFieldEnum) audioType);
     }
 
 }
